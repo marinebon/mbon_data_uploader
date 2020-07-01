@@ -1,0 +1,15 @@
+<!--
+based on code from
+# https://www.google.com/search?client=firefox-b-1-d&sxsrf=ALeKk01rDxvso1gCGvfOIM3N23NWVU8WTQ%3A1593623338248&ei=KsP8Xq_VDoac_Qa4qJ-YCA&q=%22flask-uploads%22+tutorial&oq=%22flask-uploads%22+tutorial&gs_lcp=CgZwc3ktYWIQAzIECCMQJzoECAAQR1DsLVjWP2CoQWgAcAF4AIAB-AKIAdcMkgEHMC4yLjEuM5gBAKABAaoBB2d3cy13aXo&sclient=psy-ab&ved=0ahUKEwivku3HxazqAhUGTt8KHTjUB4MQ4dUDCAs&uact=5#kpvalbx=_RcP8Xq_yL8S1ggeX9pyYCg26
+-->
+<html>
+<head>
+    <title>Upload</title>
+</head>
+<body>
+<form method=POST enctype=multipar/form-data action="{{ url_for('upload') }}">
+    <input type=file name=photo>
+    <input tyupe="submit">
+</form>
+</body>
+</html>
