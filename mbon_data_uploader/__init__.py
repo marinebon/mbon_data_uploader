@@ -1,7 +1,7 @@
 import os
+import subprocess
 import tempfile
 
-import pandas as pd
 from flask import Flask, flash, request, redirect, url_for
 from werkzeug.utils import secure_filename
 
@@ -19,13 +19,21 @@ def create_app(test_config=None):
         return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
     def handle_file(filepath):
-        assert csv in filepath
-        pd.read_csv(filepath)
-        # TODO: push csv into influxdb using
-        #   https://github.com/fabio-miranda/csv-to-influxdb/blob/master/csv-to-influxdb.py
-
+        """
+        Pushes data from file into influxdb
+        """
+        assert ".csv" in filepath
+        subprocess.run([
+            "export_csv_to_influx",
+            "--csv", filepath,
+            "--dbname", "fwc_coral_disease",
+            "--measurement", "user_custom_timeseries",  # TODO: set this to something less generic
+            "--field_columns", "mean,climatology,anomaly",
+            "--force_insert_even_csv_no_update", "True",
+            "--server", "tylar-pc:8086"  # TODO: update this for prod
+            "--time_column", "Time"
+        ])
 
     @app.route('/upload_success', methods=['GET'])
     def upload_success():
@@ -34,7 +42,6 @@ def create_app(test_config=None):
         <title>File Uploaded</title>
         <h1>Your file has been uploaded</h1>
         '''
-
 
     @app.route('/', methods=['GET', 'POST'])
     def upload_file():
