@@ -1,9 +1,10 @@
 import os
-import subprocess
 import tempfile
 
-from flask import Flask, flash, request, redirect, url_for
+from flask import Flask, flash, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
+
+from mbon_data_uploader.handle_csv_file import handle_csv_file
 
 
 def create_app(test_config=None):
@@ -18,22 +19,6 @@ def create_app(test_config=None):
     def allowed_file(filename):
         return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-    def handle_file(filepath):
-        """
-        Pushes data from file into influxdb
-        """
-        assert ".csv" in filepath
-        subprocess.run([
-            "export_csv_to_influx",
-            "--csv", filepath,
-            "--dbname", "fwc_coral_disease",
-            "--measurement", "user_custom_timeseries",  # TODO: set this to something less generic
-            "--field_columns", "mean,climatology,anomaly",
-            "--force_insert_even_csv_no_update", "True",
-            "--server", "tylar-pc:8086"  # TODO: update this for prod
-            "--time_column", "Time"
-        ])
 
     @app.route('/upload_success', methods=['GET'])
     def upload_success():
@@ -60,17 +45,10 @@ def create_app(test_config=None):
                 filename = secure_filename(file.filename)
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(filepath)
-                handle_file(filepath)
+                handle_csv_file(filepath, request.form)
                 return redirect(url_for('upload_success',
                                         filename=filename))
-        return '''
-        <!doctype html>
-        <title>Upload new File</title>
-        <h1>Upload new File</h1>
-        <form method=post enctype=multipart/form-data>
-          <input type=file name=file>
-          <input type=submit value=Upload>
-        </form>
-        '''
+        # else method == GET
+        return render_template("file_submission.html")
 
     return app

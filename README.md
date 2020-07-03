@@ -1,5 +1,6 @@
 # mbon_data_uploader
-frontend for uploading mbon data into the mbon-in-a-box stack
+Frontend for uploading mbon data into the mbon-in-a-box stack.
+Flask app connects to influxdb and allows you to upload .csv files. 
 
 
 
