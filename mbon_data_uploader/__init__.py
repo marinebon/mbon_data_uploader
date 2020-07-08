@@ -48,7 +48,8 @@ def create_app(test_config=None):
                 handle_csv_file(filepath, request.form)
                 return redirect(url_for('upload_success',
                                         filename=filename))
-        # else method == GET
-        return render_template("file_submission.html")
+        else:  # method == GET
+            assert request.method == 'GET'
+            return render_template("file_submission.html")
 
     return app
