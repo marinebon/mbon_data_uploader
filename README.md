@@ -36,5 +36,6 @@ curl -v \
 --form 'tag_set="location=MIA,sensor=viirs"' \
 --form 'fields="mean,climatology,anomaly"' \
 --form 'file=@/home/tylar/Downloads/FKdbv2_Rrs_671_TS_VSNPP_daily_MIA.csv' \
+--form 'time_column=Time' \
 http://localhost:5000/
 ```
