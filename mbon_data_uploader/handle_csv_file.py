@@ -14,6 +14,8 @@ def handle_csv_file(filepath, form_args):
     assert measurement is not None
     tag_set = form_args["tag_set"]
     assert tag_set is not None
+    fields = form_args['fields']
+    assert fields is not None
 
     # === insert tag columns & set proper na values
     NA_REP = -999  # influxdb doesn't handle NA, NaN, null
@@ -33,7 +35,7 @@ def handle_csv_file(filepath, form_args):
         "--csv", filepath,
         "--dbname", DBNAME,
         "--measurement", measurement,
-        "--field_columns", "mean,climatology,anomaly",
+        "--field_columns", fields,
         "--tag_columns", ','.join(tag_columns),
         "--force_insert_even_csv_no_update", "True",
         "--server", INFLUXDB_SERVER,  # TODO: update this for prod

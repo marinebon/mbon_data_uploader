@@ -8,15 +8,23 @@
       <tr>
           <td>measurement:</td>
           <td>(example: rs_oc_chlor)</td>
-          <td><input type=text name=measurement value={{request.args['measurement']}}></td>
+          <td><input
+              type=text name=measurement value={{request.args['measurement']}}
+          ></td>
       </tr>
       <tr>
           <td>tag_set:</td>
           <td>(example: location=MIA)</td>
-          <td><input type=text name=tag_set value="{{request.args['tag_set']}}"></td>
+          <td><input
+              type=text name=tag_set value="{{request.args['tag_set']}}"
+          ></td>
       </tr>
       <tr>
-          <td> test</td>
+          <td>fields</td>
+          <td>(example: mean,climatology,anomaly)</td>
+          <td><input
+              type=text name=fields value="{{request.args['fields']}}"
+          ></td>
       </tr>
   </table>
 </form>

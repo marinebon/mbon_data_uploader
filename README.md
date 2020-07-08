@@ -21,6 +21,12 @@ SELECT mean("anomaly") FROM "rs_chlora" WHERE "anomaly"!=-999 AND $timeFilter GR
 SELECT mean("anomaly") FROM "rs_oc_chlor" WHERE ("location" =~ /^$Locations$/) AND anomaly!=-999 AND $timeFilter GROUP BY time($__interval) fill(null)
 ```
 
+## prefilled GUI URL
+The GUI is RESTful, meaning that you can create URLs pre-filled with your form information:
+```
+http://localhost:5000/?measurement=Rrs_671&tag_set=location=BIS,sensor=viirs&fields=mean,climatology,anomaly
+```
+
 ## Submit data from CLI
 Data can be submitted from the command line using curl:
 
@@ -28,6 +34,7 @@ Data can be submitted from the command line using curl:
 curl -v \
 --form "measurement=Rrs_671" \
 --form 'tag_set="location=MIA,sensor=viirs"' \
+--form 'fields="mean,climatology,anomaly"' \
 --form 'file=@/home/tylar/Downloads/FKdbv2_Rrs_671_TS_VSNPP_daily_MIA.csv' \
 http://localhost:5000/
 ```
