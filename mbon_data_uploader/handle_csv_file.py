@@ -1,3 +1,4 @@
+import logging
 import pandas as pd
 import subprocess
 
@@ -30,6 +31,9 @@ def handle_csv_file(filepath, form_args):
     df.to_csv(filepath, na_rep=NA_REP)
 
     # === submit to influxdb server
+    logging.info("loading {}'s fields ({}) with tags={}".format(
+        measurement, fields, tag_columns
+    ))
     # measurement,tag_set      field_set
     # rs_oc_chlor,location=MIA anom,mean,clim
     subprocess.run([

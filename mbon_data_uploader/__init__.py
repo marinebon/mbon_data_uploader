@@ -1,5 +1,6 @@
 import os
 import tempfile
+import logging
 
 from flask import Flask, flash, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
@@ -15,6 +16,7 @@ def create_app(test_config=None):
     app = Flask(__name__)
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+    logging.basicConfig(filename='mbon_data_uploader.log', level=logging.INFO)
 
     def allowed_file(filename):
         return '.' in filename and \
@@ -31,6 +33,7 @@ def create_app(test_config=None):
     @app.route('/', methods=['GET', 'POST'])
     def upload_file():
         if request.method == 'POST':
+            logging.info("POST")
             # check if the post request has the file part
             if 'file' not in request.files:
                 flash('No file part')
@@ -49,6 +52,7 @@ def create_app(test_config=None):
                 return redirect(url_for('upload_success',
                                         filename=filename))
         else:  # method == GET
+            logging.info("GET")
             assert request.method == 'GET'
             return render_template("file_submission.html")
 
