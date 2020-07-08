@@ -22,8 +22,12 @@ SELECT mean("anomaly") FROM "rs_oc_chlor" WHERE ("location" =~ /^$Locations$/) A
 ```
 
 ## Submit data from CLI
-Data can be submitted from the command line using curl
+Data can be submitted from the command line using curl:
 
 ```bash
-
+curl -v \
+--form "measurement=Rrs_671" \
+--form 'tag_set="location=MIA,sensor=viirs"' \
+--form 'file=@/home/tylar/Downloads/FKdbv2_Rrs_671_TS_VSNPP_daily_MIA.csv' \
+http://localhost:5000/
 ```
