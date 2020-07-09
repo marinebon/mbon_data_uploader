@@ -1,4 +1,5 @@
 import logging
+import os
 import pandas as pd
 import subprocess
 
@@ -7,7 +8,7 @@ def handle_csv_file(filepath, form_args):
     """
     Pushes data from csv file into influxdb
     """
-    INFLUXDB_SERVER = "tylar-pc:8086"
+    INFLUXDB_SERVER = os.environ["INFLUXDB_HOSTNAME"]
     DBNAME = "fwc_coral_disease"
 
     assert ".csv" in filepath
