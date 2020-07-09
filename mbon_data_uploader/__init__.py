@@ -1,8 +1,17 @@
+"""
+Contains the web application factory.
+"""
 import os
 import tempfile
+import traceback
 import logging
 
-from flask import Flask, flash, request, redirect, url_for, render_template
+from flask import Flask
+from flask import flash
+from flask import request
+from flask import redirect
+from flask import url_for
+from flask import render_template
 from werkzeug.utils import secure_filename
 
 from mbon_data_uploader.handle_csv_file import handle_csv_file
@@ -55,5 +64,14 @@ def create_app(test_config=None):
             logging.info("GET")
             assert request.method == 'GET'
             return render_template("file_submission.html")
+
+    @app.errorhandler(500)
+    def handle_http_exception(error):
+        error_dict = {
+            'code': error.code,
+            'description': error.description,
+            'stack_trace': traceback.format_exc()
+        }
+        return render_template("error.html", error_dict=error_dict)#, 500
 
     return app
