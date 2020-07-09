@@ -8,11 +8,13 @@ FROM python:3.7
 COPY . /opt/mbon_data_uploader
 
 # === install dependencies
-RUN pip install ExportCsvToInflux
-RUN pip install waitress
-
 WORKDIR /opt/mbon_data_uploader
 RUN pip install -r requirements.txt
 
-# startup the app
+# startup the production app
 ENTRYPOINT ["waitress-serve", "--port=5000", "--call", "mbon_data_uploader:create_app"]
+
+# # OR startup the dev app
+# RUN export FLASK_APP=mbon_data_uploader
+# RUN export FLASK_ENV=development
+# ENTRYPOINT ["flask", "run"]
