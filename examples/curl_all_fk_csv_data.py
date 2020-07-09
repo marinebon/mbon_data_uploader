@@ -22,6 +22,7 @@ curl \
 """
 
 import subprocess
+INFLUX_HOSTNAME = 'http://tylar-pc:5000/'
 
 
 BASE_DIRECTORY = '/srv/imars-objects/fk'
@@ -42,7 +43,7 @@ for river in ['FKdb', 'FWCdb_EFL']:
         '--form', 'time_column=time',
         # -H 'Content-Type: text/plain'
         # -u 'username:password'
-        'http://tylar-pc:5000/'
+        INFLUX_HOSTNAME
     ])
 # ============================================================================
 # === Sat region extractions
@@ -75,7 +76,7 @@ for roi in FK_SUBREGIONS:
         '--form', 'time_column=Time',
         # -H 'Content-Type: text/plain'
         # -u 'username:password'
-        'http://tylar-pc:5000/'
+         INFLUX_HOSTNAME
     ])
 
 
@@ -98,7 +99,7 @@ for roi in FK_SUBREGIONS:
             '--form', 'time_column=Time',
             # -H 'Content-Type: text/plain'
             # -u 'username:password'
-            'http://tylar-pc:5000/'
+            INFLUX_HOSTNAME
         ])
 
 # EXT_TS_VSNPP/SST is empty
@@ -115,7 +116,7 @@ for roi in FK_SUBREGIONS:
         '--form', 'time_column=Time',
         # -H 'Content-Type: text/plain'
         # -u 'username:password'
-        'http://tylar-pc:5000/'
+        INFLUX_HOSTNAME
     ])
 
 
@@ -133,5 +134,5 @@ for roi in ['bnkf1', 'bobf1', 'lrkf1', 'pkyf1', 'wrbf1']:
             '--form', 'time_column=time',
             # -H 'Content-Type: text/plain'
             # -u 'username:password'
-            'http://tylar-pc:5000/'
+            INFLUX_HOSTNAME
         ])
