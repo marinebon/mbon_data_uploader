@@ -23,6 +23,10 @@ SELECT mean("anomaly") FROM "rs_oc_chlor" WHERE ("location" =~ /^$Locations$/) A
 SELECT mean("anomaly") AS anomaly FROM "modis_abi"
 WHERE ("location" =~ /^$Locations$/) AND anomaly!=-999 AND $timeFilter
 GROUP BY time($__interval) fill(null)
+
+SELECT mean("anomaly") AS anomaly FROM "modis_abi"
+WHERE ("location" =~ /^$Locations$/) AND anomaly!=-999 AND $timeFilter
+GROUP BY time($__interval),"location" fill(null)
 ```
 
 ## prefilled GUI URL
