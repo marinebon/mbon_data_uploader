@@ -39,3 +39,6 @@ curl -v \
 --form 'time_column=Time' \
 http://localhost:5000/
 ```
+
+## troubleshooting
+A server log is within the docker container in `~/mbon_data_uploader.log`.
