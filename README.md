@@ -19,6 +19,10 @@ The query should look something like the following examples:
 SELECT mean("anomaly") FROM "rs_chlora" WHERE "anomaly"!=-999 AND $timeFilter GROUP BY time($__interval)
 
 SELECT mean("anomaly") FROM "rs_oc_chlor" WHERE ("location" =~ /^$Locations$/) AND anomaly!=-999 AND $timeFilter GROUP BY time($__interval) fill(null)
+
+SELECT mean("anomaly") AS anomaly FROM "modis_abi"
+WHERE ("location" =~ /^$Locations$/) AND anomaly!=-999 AND $timeFilter
+GROUP BY time($__interval) fill(null)
 ```
 
 ## prefilled GUI URL
