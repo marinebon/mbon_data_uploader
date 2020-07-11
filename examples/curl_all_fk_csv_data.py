@@ -19,6 +19,10 @@ curl \
     --form time_column=time \
     http://tylar-pc:5000/
 ```
+
+If this script is successful you will see a redirect for each file that is
+uploaded.
+If a file fails you will receive an html response with the stack trace.
 """
 
 import subprocess
@@ -44,7 +48,7 @@ for river in ['FKdb', 'FWCdb_EFL']:
         # -H 'Content-Type: text/plain'
         # -u 'username:password'
         INFLUX_HOSTNAME
-    ])
+    ], check=True)
 # ============================================================================
 # === Sat region extractions
 # ============================================================================
@@ -76,8 +80,8 @@ for roi in FK_SUBREGIONS:
         '--form', 'time_column=Time',
         # -H 'Content-Type: text/plain'
         # -u 'username:password'
-         INFLUX_HOSTNAME
-    ])
+        INFLUX_HOSTNAME
+    ], check=True)
 
 
 # EXT_TS_MODA/SST & SST4 are empty (2020-07-09)
@@ -100,13 +104,13 @@ for roi in FK_SUBREGIONS:
             # -H 'Content-Type: text/plain'
             # -u 'username:password'
             INFLUX_HOSTNAME
-        ])
+        ], check=True)
 
 # EXT_TS_VSNPP/SST is empty
 
 base_dir = BASE_DIRECTORY + '/EXT_TS_VSNPP/SSTN/'
 for roi in FK_SUBREGIONS:
-    filepath = base_dir + '/FKdbv2_sstn_TS_VSNPP_daily_' + roi + '.csv',
+    filepath = base_dir + '/FKdbv2_sstn_TS_VSNPP_daily_' + roi + '.csv'
     subprocess.run([
         'curl',
         '--form', 'measurement=viirs_sstn',
@@ -117,14 +121,14 @@ for roi in FK_SUBREGIONS:
         # -H 'Content-Type: text/plain'
         # -u 'username:password'
         INFLUX_HOSTNAME
-    ])
+    ], check=True)
 
 
 # === FK bouys
 base_dir = '/srv/imars-objects/modis_aqua_fk/SAL_TS_NDBC'
 for roi in ['bnkf1', 'bobf1', 'lrkf1', 'pkyf1', 'wrbf1']:
     for product in ['sal', 'temp']:
-        filepath = base_dir + '/' + roi + '_NDBC_' + product + 'FKdb.csv',
+        filepath = base_dir + '/' + roi + '_NDBC_' + product + 'FKdb.csv'
         subprocess.run([
             'curl',
             '--form', 'measurement=bouy_' + product,
@@ -135,4 +139,4 @@ for roi in ['bnkf1', 'bobf1', 'lrkf1', 'pkyf1', 'wrbf1']:
             # -H 'Content-Type: text/plain'
             # -u 'username:password'
             INFLUX_HOSTNAME
-        ])
+        ], check=True)
