@@ -2,6 +2,7 @@
 Contains the web application factory.
 """
 import os
+import subprocess
 import tempfile
 import traceback
 import logging
@@ -67,11 +68,25 @@ def create_app(test_config=None):
 
     @app.errorhandler(500)
     def handle_http_exception(error):
+        stacktrace = traceback.format_exc()
         error_dict = {
             'code': error.code,
             'description': error.description,
-            'stack_trace': traceback.format_exc()
+            'stack_trace': stacktrace
         }
-        return render_template("error.html", error_dict=error_dict)#, 500
+        dir(error)
+        # if isinstance(error, subprocess.CalledProcessError):
+        if "subprocess.CalledProcessError" in stacktrace:
+            error_dict['return_code'] = error.original_exception.returncode
+            error_dict['output'] = error.original_exception.output
+            error_dict['stdout'] = error.original_exception.stdout
+            error_dict['stderr'] = error.original_exception.stderr
+            return render_template(
+                "error_subprocess.html", error_dict=error_dict
+            )  # , 500
+        else:
+            return render_template(
+                "error.html", error_dict=error_dict
+            )  # , 500
 
     return app
