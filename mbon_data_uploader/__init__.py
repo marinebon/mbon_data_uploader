@@ -1,19 +1,18 @@
 """
 Contains the web application factory.
 """
+import logging
 import os
-import subprocess
 import tempfile
 import traceback
-import logging
 
-from flask import Flask
 from flask import flash
-from flask import request
+from flask import Flask
 from flask import redirect
-from flask import url_for
 from flask import render_template
+from flask import request
 from werkzeug.utils import secure_filename
+from flask import url_for
 
 from mbon_data_uploader.handle_csv_file import handle_csv_file
 
