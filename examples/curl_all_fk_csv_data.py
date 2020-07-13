@@ -128,7 +128,7 @@ for roi in FK_SUBREGIONS:
 base_dir = '/srv/imars-objects/modis_aqua_fk/SAL_TS_NDBC'
 for roi in ['bnkf1', 'bobf1', 'lrkf1', 'pkyf1', 'wrbf1']:
     for product in ['sal', 'temp']:
-        filepath = base_dir + '/' + roi + '_NDBC_' + product + 'FKdb.csv'
+        filepath = base_dir + '/' + roi + '_NDBC_' + product + '_FKdb.csv'
         subprocess.run([
             'curl',
             '--form', 'measurement=bouy_' + product,
