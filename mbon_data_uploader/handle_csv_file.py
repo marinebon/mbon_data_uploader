@@ -22,7 +22,7 @@ def handle_csv_file(filepath, form_args):
     assert time_column is not None
 
     # === insert tag columns & set proper na values
-    NA_REP = -999  # influxdb doesn't handle NA, NaN, null
+    NA_REP = ''  # influxdb doesn't handle NA, NaN, null
     df = pd.read_csv(filepath)
     tag_columns = []
     for key_val in tag_set.split(','):
