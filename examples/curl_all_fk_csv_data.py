@@ -129,7 +129,7 @@ base_dir = '/srv/imars-objects/fk/SAL_TS_NDBC'
 for roi in ['BUTTERNUT', 'WHIPRAY', 'PETERSON', 'BOBALLEN', 'LITTLERABBIT']:
     for product in ['sal', 'temp']:
         filepath = base_dir + '/' + roi + '_NDBC_' + product + '_FKdb.csv'
-        subprocess.run([
+        result = subprocess.run([
             'curl',
             '--form', 'measurement=bouy_' + product,
             '--form', 'tag_set=location=' + roi + ',source=ndbc',
@@ -140,3 +140,4 @@ for roi in ['BUTTERNUT', 'WHIPRAY', 'PETERSON', 'BOBALLEN', 'LITTLERABBIT']:
             # -u 'username:password'
             UPLOADER_HOSTNAME
         ], check=True)
+        print(result.args)
