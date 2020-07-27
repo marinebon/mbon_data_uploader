@@ -20,16 +20,15 @@ from mbon_data_uploader.handle_csv_file import handle_csv_file
 def create_app(test_config=None):
 
     UPLOAD_FOLDER = tempfile.gettempdir()
-    ALLOWED_EXTENSIONS = {'csv'}
 
     app = Flask(__name__)
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
     logging.basicConfig(filename='mbon_data_uploader.log', level=logging.INFO)
 
-    def allowed_file(filename):
+    def allowed_file(filename, allowed_extensions):
         return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+           filename.rsplit('.', 1)[1].lower() in allowed_extensions
 
     @app.route('/upload_success', methods=['GET'])
     def upload_success():
@@ -41,6 +40,9 @@ def create_app(test_config=None):
 
     @app.route('/', methods=['GET'])
     def welcome_page():
+        """
+        Welcome page shows basic explaination and list of submission routes.
+        """
         return '''
         <!doctype html>
         <h1>Welcome</h1>
@@ -53,31 +55,62 @@ def create_app(test_config=None):
         </ul>
         '''
 
-    @app.route('/submit/sat_image_extraction', methods=['GET', 'POST'])
-    def upload_file():
-        if request.method == 'POST':
-            logging.info("POST")
-            # check if the post request has the file part
-            if 'file' not in request.files:
-                flash('No file part')
-                return redirect(request.url)
-            file = request.files['file']
-            # if user does not select file, browser also
-            # submit an empty part without filename
-            if file.filename == '':
-                flash('No selected file')
-                return redirect(request.url)
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                file.save(filepath)
-                handle_csv_file(filepath, request.form)
-                return redirect(url_for('upload_success',
-                                        filename=filename))
+    def check_for_file(request):
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        return request.files['file']
+
+    def validate_and_handle_file(allowed_extensions, file_handler):
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        file = check_for_file(request)
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(
+            file.filename, allowed_extensions
+        ):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            file_handler(filepath, request.form)
+            return redirect(
+                url_for('upload_success', filename=filename)
+            )
+
+    # ========================================================================
+    # === Worldview file submission to postGIS database
+    # ========================================================================
+    @app.route('/submit/worldview_image', moethods=['GET', 'POST'])
+    def upload_wv_image():
+        if request.method == "POST":
+            return validate_and_handle_file(
+                allowed_extensions={'tiff'},
+                file_handler=handle_csv_file
+            )
         else:  # method == GET
             logging.info("GET")
             assert request.method == 'GET'
             return render_template("submit/sat_image_extraction.html")
+    # ========================================================================
+
+    # ========================================================================
+    # === Dan's various extraction timeseries csv files to influxdb
+    # ========================================================================
+    @app.route('/submit/sat_image_extraction', methods=['GET', 'POST'])
+    def upload_file():
+        if request.method == 'POST':
+            return validate_and_handle_file(
+                allowed_extensions={'csv'},
+                file_handler=handle_csv_file
+            )
+        else:  # method == GET
+            logging.info("GET")
+            assert request.method == 'GET'
+            return render_template("submit/sat_image_extraction.html")
+    # ========================================================================
 
     @app.errorhandler(500)
     def handle_http_exception(error):

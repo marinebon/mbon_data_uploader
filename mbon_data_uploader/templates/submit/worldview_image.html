@@ -1,0 +1,23 @@
+<!doctype html>
+<title>Upload new File</title>
+<h1>Upload new File</h1>
+<form method=post enctype=multipart/form-data>
+  <input type=file name=file>
+  <input type=submit value=Upload>
+  <table style="width:100%">
+      <tr>
+          <td>product_type:</td>
+          <td>(example: wv_classification_map)</td>
+          <td><input
+              type=text name=product_type value={{request.args['product_type']}}
+          ></td>
+      </tr>
+      <tr>
+          <td>region_name:</td>
+          <td>(example: alabama)</td>
+          <td><input
+              type=text name=region_name value="{{request.args['region_name']}}"
+          ></td>
+      </tr>
+  </table>
+</form>
