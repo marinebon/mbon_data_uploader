@@ -39,7 +39,21 @@ def create_app(test_config=None):
         <h1>Your file has been uploaded</h1>
         '''
 
-    @app.route('/', methods=['GET', 'POST'])
+    @app.route('/', methods=['GET'])
+    def welcome_page():
+        return '''
+        <!doctype html>
+        <h1>Welcome</h1>
+        This app allows the uploading of data files into databases.
+        Below is a list of submission forms available.
+        <ul>
+            <li><a href="/submit/sat_image_extraction">
+                sat_image_extraction
+            </a></li>
+        </ul>
+        '''
+
+    @app.route('/submit/sat_image_extraction', methods=['GET', 'POST'])
     def upload_file():
         if request.method == 'POST':
             logging.info("POST")
@@ -63,7 +77,7 @@ def create_app(test_config=None):
         else:  # method == GET
             logging.info("GET")
             assert request.method == 'GET'
-            return render_template("file_submission.html")
+            return render_template("submit/sat_image_extraction.html")
 
     @app.errorhandler(500)
     def handle_http_exception(error):

@@ -2,6 +2,14 @@
 Frontend for uploading mbon data into the mbon-in-a-box stack.
 Flask app connects to influxdb and allows you to upload .csv files.
 
+## dev
+1. clone repo
+2. edit routes in `__init__.py`
+3. run docker image
+    * first time: `sudo docker build --tag mbon_data_uploader:0.0.1 . && sudo docker run --publish 5000:5000 --detach --name mbondatauploader mbon_data_uploader:0.0.1`
+    * rebuild: `sudo docker build --tag mbon_data_uploader:0.0.1 . && sudo docker stop mbondatauploader && sudo docker rm mbondatauploader && sudo docker run --publish 5000:5000 --detach --name mbondatauploader mbon_data_uploader:0.0.1` 
+4. view app @ localhost:5000/
+
 ## test csv uploading
 ```bash
 export_csv_to_influx --csv /tmp/FKdbv2_Rrs_671_TS_VSNPP_daily_MIA_zeros.csv --dbname fwc_coral_disease --measurement demo --field_columns mean,climatology,anomaly --force_insert_even_csv_no_update True --server tylar-pc:8086 --time_column Time
