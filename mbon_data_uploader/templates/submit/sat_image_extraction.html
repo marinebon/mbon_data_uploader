@@ -1,9 +1,18 @@
 <!doctype html>
-<title>Upload new File</title>
-<h1>Upload new File</h1>
+<title>Upload Time Series File</title>
+<h1>Upload Time Series File</h1>
 <form method=post enctype=multipart/form-data>
   <input type=file name=file>
   <input type=submit value=Upload>
+  <p>
+  Here you can upload timeseries .csv files extracted from other sources.
+  </p><p>
+  The fields (columns) from the csv file will be loaded into an InfluxDB backend.
+  The data will then be available for display on a frontend like grafana.
+  </p><p>
+  These can be data from satellite images extracted from a region of interest
+  but other data can also be uploaded.
+  </p>
   <table style="width:100%">
       <tr>
           <td>measurement:</td>
