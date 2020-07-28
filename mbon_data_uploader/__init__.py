@@ -14,7 +14,12 @@ from flask import request
 from werkzeug.utils import secure_filename
 from flask import url_for
 
+# =======================================================================
+# === File upload targets. Comment out any routes you aren't using.
+# =======================================================================
 from mbon_data_uploader.handle_csv_file import handle_csv_file
+from mbon_data_uploader.handle_worldview_image import handle_worldview_image
+# =======================================================================
 
 
 def create_app(test_config=None):
@@ -25,6 +30,40 @@ def create_app(test_config=None):
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
     logging.basicConfig(filename='mbon_data_uploader.log', level=logging.INFO)
+    UPLOAD_ROUTES = []
+
+    # =======================================================================
+    # === File upload targets. Comment out any routes you aren't using.
+    # =======================================================================
+    UPLOAD_ROUTES.append("sat_image_extraction")
+    @app.route('/submit/sat_image_extraction', methods=['GET', 'POST'])
+    def sat_image_extraction():
+        return get_form_and_post_upload(
+            request,
+            allowed_extensions={'csv'},
+            file_handler=handle_csv_file,
+            template="sat_image_extraction.html"
+        )
+
+    UPLOAD_ROUTES.append("worldview_image")
+    @app.route('/submit/worldview_image', methods=['GET', 'POST'])
+    def worldview_image():
+        return get_form_and_post_upload(
+            request,
+            allowed_extensions={'tif'},
+            file_handler=handle_worldview_image,
+            template="worldview_image.html"
+        )
+    # =======================================================================
+
+    @app.route('/', methods=['GET'])
+    def welcome_page():
+        """
+        Welcome page shows basic explaination and list of submission routes.
+        """
+        return render_template(
+            "welcome_page.html", UPLOAD_ROUTES=UPLOAD_ROUTES
+        )
 
     def allowed_file(filename, allowed_extensions):
         return '.' in filename and \
@@ -36,23 +75,6 @@ def create_app(test_config=None):
         <!doctype html>
         <title>File Uploaded</title>
         <h1>Your file has been uploaded</h1>
-        '''
-
-    @app.route('/', methods=['GET'])
-    def welcome_page():
-        """
-        Welcome page shows basic explaination and list of submission routes.
-        """
-        return '''
-        <!doctype html>
-        <h1>Welcome</h1>
-        This app allows the uploading of data files into databases.
-        Below is a list of submission forms available.
-        <ul>
-            <li><a href="/submit/sat_image_extraction">
-                sat_image_extraction
-            </a></li>
-        </ul>
         '''
 
     def check_for_file(request):
@@ -80,37 +102,17 @@ def create_app(test_config=None):
                 url_for('upload_success', filename=filename)
             )
 
-    # ========================================================================
-    # === Worldview file submission to postGIS database
-    # ========================================================================
-    @app.route('/submit/worldview_image', moethods=['GET', 'POST'])
-    def upload_wv_image():
+    def get_form_and_post_upload(
+        request, allowed_extensions, file_handler, template
+    ):
         if request.method == "POST":
             return validate_and_handle_file(
-                allowed_extensions={'tiff'},
-                file_handler=handle_csv_file
+                allowed_extensions=allowed_extensions,
+                file_handler=file_handler
             )
         else:  # method == GET
-            logging.info("GET")
             assert request.method == 'GET'
-            return render_template("submit/sat_image_extraction.html")
-    # ========================================================================
-
-    # ========================================================================
-    # === Dan's various extraction timeseries csv files to influxdb
-    # ========================================================================
-    @app.route('/submit/sat_image_extraction', methods=['GET', 'POST'])
-    def upload_file():
-        if request.method == 'POST':
-            return validate_and_handle_file(
-                allowed_extensions={'csv'},
-                file_handler=handle_csv_file
-            )
-        else:  # method == GET
-            logging.info("GET")
-            assert request.method == 'GET'
-            return render_template("submit/sat_image_extraction.html")
-    # ========================================================================
+            return render_template(f"submit/{template}")
 
     @app.errorhandler(500)
     def handle_http_exception(error):

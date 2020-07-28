@@ -1,0 +1,16 @@
+<!doctype html>
+<h1>Welcome</h1>
+This app allows the uploading of data files into databases.
+Below is a list of submission forms available.
+<ul>
+    {% for route in UPLOAD_ROUTES %}
+    <li><a href="/submit/{{route}}">
+        {{route}}
+    </a></li>
+    {% endfor %}
+</ul>
+
+For source code and more info please see
+<a href="https://github.com/marinebon/mbon_data_uploader">
+    github/marinebon/mbon_data_uploader
+</a>
