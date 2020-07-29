@@ -17,7 +17,6 @@ from flask import url_for
 # =======================================================================
 # === File upload targets. Comment out any routes you aren't using.
 # =======================================================================
-from mbon_data_uploader.handle_csv_file import handle_csv_file
 from mbon_data_uploader.handle_worldview_image import handle_worldview_image
 # =======================================================================
 
@@ -35,16 +34,6 @@ def create_app(test_config=None):
     # =======================================================================
     # === File upload targets. Comment out any routes you aren't using.
     # =======================================================================
-    UPLOAD_ROUTES.append("sat_image_extraction")
-    @app.route('/submit/sat_image_extraction', methods=['GET', 'POST'])
-    def sat_image_extraction():
-        return get_form_and_post_upload(
-            request,
-            allowed_extensions={'csv'},
-            file_handler=handle_csv_file,
-            template="sat_image_extraction.html"
-        )
-
     UPLOAD_ROUTES.append("worldview_image")
     @app.route('/submit/worldview_image', methods=['GET', 'POST'])
     def worldview_image():
