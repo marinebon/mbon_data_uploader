@@ -13,6 +13,8 @@ def handle_worldview_image(filepath, form_args):
     POSTGRES_PASS = os.environ["POSTGRES_PASS"]
     POSTGRES_DB = os.environ["POSTGRES_DB"]
     POSTGRES_PORT = os.environ["POSTGRES_PORT"]
+    SCHEMA_NAME = os.environ["SCHEMA_NAME"]
+    TABLE_NAME = os.environ["TABLE_NAME"]
 
     conn = psycopg2.connect(
         host=POSTGIS_HOSTNAME,
@@ -41,8 +43,8 @@ def handle_worldview_image(filepath, form_args):
     # TODO hashcheck()
 
     curs.execute(
-        """
-        INSERT INTO test_schema.test_table (coltest) VALUES ('It works!');
+        f"""
+        INSERT INTO {SCHEMA_NAME}.{TABLE_NAME} (coltest) VALUES ('It wurks!');
         """,
         poi
     )
