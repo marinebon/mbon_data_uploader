@@ -32,9 +32,29 @@ def handle_worldview_image(filepath, form_args):
     assert region_name is not None
 
     # === insert file metadata into database
+    # format filepath using result from
+    # SELECT path_format_str FROM files_schema.products
+    #     WHERE short_name=={product_type};
+    filepath = "TODO"
+
+    multihash = get_hash()
+
+    datetime = get_date_from_fpath()  # TODO
+
+    n_bytes = get_file_size()  # TODO
+
     curs.execute(
         f"""
-        INSERT INTO {SCHEMA_NAME}.{TABLE_NAME} (coltest) VALUES ('Itwk!');
+        INSERT INTO {SCHEMA_NAME}.{TABLE_NAME}
+        (
+            filepath,multihash,provenance,date_time,last_processed,
+            n_bytes,product_name,area_name,status
+        )
+        VALUES
+        (
+            '{filepath}','{multihash}','web_submit',{datetime},0,
+            {n_bytes},'{product_type}','{region_name}','new'
+        );
         """
     )
 
