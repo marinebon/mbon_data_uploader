@@ -3,3 +3,4 @@ pandas>=1.0.3
 export-csv-to-influx @ git+https://github.com/7yl4r/export-csv-to-influx@master#egg=export-csv-to-influx
 waitress>=1.4.4
 psycopg2>=2.8.5
+filepanther @ git+https://github.com/7yl4r/filepanther@master#egg=filepanther
