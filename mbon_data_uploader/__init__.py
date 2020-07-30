@@ -6,7 +6,6 @@ import os
 import tempfile
 import traceback
 
-from flask import flash
 from flask import Flask
 from flask import redirect
 from flask import render_template
@@ -80,20 +79,19 @@ def create_app(test_config=None):
     def check_for_file(request):
         # check if the post request has the file part
         if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
+            return "No file part"
         return request.files['file']
 
     def validate_and_handle_file(allowed_extensions, file_handler):
         # if user does not select file, browser also
         # submit an empty part without filename
         file = check_for_file(request)
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(
+        file_allowed = allowed_file(
             file.filename, allowed_extensions
-        ):
+        )
+        if file.filename == '':
+            return 'No selected file'
+        elif file and file_allowed:
             filename = secure_filename(file.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
@@ -101,6 +99,10 @@ def create_app(test_config=None):
             return redirect(
                 url_for('upload_success', filename=filename)
             )
+        elif file_allowed is False:
+            return "File extension not allowed"
+        else:
+            raise ValueError("unknown proble with file")
 
     def get_form_and_post_upload(
         request, allowed_extensions, file_handler, template

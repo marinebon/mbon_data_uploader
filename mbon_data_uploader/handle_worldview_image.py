@@ -31,20 +31,15 @@ def handle_worldview_image(filepath, form_args):
     region_name = form_args["region_name"]
     assert region_name is not None
 
+    # === insert file metadata into database
+    curs.execute(
+        f"""
+        INSERT INTO {SCHEMA_NAME}.{TABLE_NAME} (coltest) VALUES ('Itwk!');
+        """
+    )
+
     # === put file into filesystem imars-objects
     fname = os.path.basename(filepath)
     new_filepath = f"/srv/imars-objects/{region_name}/{product_type}/{fname}"
     # cp filepath new_filepath
     shutil.move(filepath, new_filepath)
-
-    # === insert file metadata into database
-    raise NotImplementedError("NYI")
-
-    # TODO hashcheck()
-
-    curs.execute(
-        f"""
-        INSERT INTO {SCHEMA_NAME}.{TABLE_NAME} (coltest) VALUES ('It wurks!');
-        """,
-        poi
-    )
