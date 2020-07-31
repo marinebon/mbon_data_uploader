@@ -20,11 +20,12 @@ RUN ./install.sh
 RUN ipfs init
 # ===========================================================================
 
-# startup the production app
+# === startup the production app OR...
 WORKDIR /opt/mbon_data_uploader
 ENTRYPOINT ["waitress-serve", "--port=5000", "--call", "mbon_data_uploader:create_app"]
 
-# # OR startup the dev app
+# === ...OR startup the dev app
+# WORKDIR /opt/mbon_data_uploader
 # RUN export FLASK_APP=mbon_data_uploader
 # RUN export FLASK_ENV=development
 # ENTRYPOINT ["flask", "run"]

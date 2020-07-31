@@ -1,8 +1,9 @@
 import os
 import shutil
 import subprocess
+import sys
 
-from filepanther.metadata_to_filepath import filepath_to_metadata
+from filepanther.filepath_to_metadata import filepath_to_metadata
 import psycopg2
 
 
@@ -37,12 +38,21 @@ def handle_worldview_image(filepath, form_args):
     ()
 
     # format filepath using result from
-    curs.execute(
-        f"""
-        SELECT path_format_str FROM {SCHEMA_NAME}.products
-        WHERE short_name == {product_type};
-        """
-    )
+    try:
+        curs.execute(
+            f"""
+            SELECT path_format_str FROM {SCHEMA_NAME}.products
+            WHERE short_name = '{product_type}';
+            """
+        )
+    except psycopg2.errors.UndefinedColumn as err:
+        # add more detail to error message:
+        raise (
+            type(err)(
+                str(err) + "\n Given product type is not valid."
+            ).with_traceback(sys.exc_info()[2])
+        )
+
     product_format_str = curs.fetchone()[0]
 
     # === collect metadata from filepath
@@ -50,7 +60,7 @@ def handle_worldview_image(filepath, form_args):
         product_format_str, filepath
     )
     # === combine with metadata from the form
-    metadata_dict.update({  # do checks for unequal vals instead of update
+    metadata_dict.update({  # TODO: check for unequal vals instead of update
         "product_short_name": product_type,
         "area_short_name": region_name,
         "multihash": _get_base58_multihash(filepath),
