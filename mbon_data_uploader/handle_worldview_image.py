@@ -35,8 +35,6 @@ def handle_worldview_image(filepath, form_args):
     region_name = form_args["region_name"]
     assert region_name is not None
 
-    ()
-
     # format filepath using result from
     try:
         curs.execute(
@@ -57,7 +55,7 @@ def handle_worldview_image(filepath, form_args):
 
     # === collect metadata from filepath
     metadata_dict = filepath_to_metadata(
-        product_format_str, filepath
+        product_format_str, filepath, basename_only=True
     )
     # === combine with metadata from the form
     metadata_dict.update({  # TODO: check for unequal vals instead of update
@@ -89,7 +87,8 @@ def handle_worldview_image(filepath, form_args):
             '{metadata_dict['filepath']}',
             '{metadata_dict['multihash']}',
             'web_submit',
-            {metadata_dict['datetime']},0,
+            '{metadata_dict['_datetime']}',
+            '1901-01-01 01:01:01',
             {metadata_dict['n_bytes']},
             '{metadata_dict['product_short_name']}',
             '{metadata_dict['area_short_name']}',
