@@ -45,7 +45,7 @@ def handle_csv_file(filepath, form_args):
         "--field_columns", fields,
         "--tag_columns", ','.join(tag_columns),
         "--force_insert_even_csv_no_update", "True",
-        "--server", INFLUXDB_SERVER,  # TODO: update this for prod
+        "--server", INFLUXDB_SERVER,
         "--time_column", time_column
     ], check=True)
 

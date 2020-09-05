@@ -18,6 +18,7 @@ from flask import url_for
 # =======================================================================
 from mbon_data_uploader.handle_csv_file import handle_csv_file
 from mbon_data_uploader.handle_worldview_image import handle_worldview_image
+from mbon_data_uploader.handle_wq_data_ws import handle_wq_data_ws
 # =======================================================================
 
 
@@ -52,6 +53,16 @@ def create_app(test_config=None):
             allowed_extensions={'tif'},
             file_handler=handle_worldview_image,
             template="worldview_image.html"
+        )
+
+    UPLOAD_ROUTES.append("wq_data_ws")
+    @app.route('/submit/wq_data_ws', methods=['GET', 'POST'])
+    def wq_data_ws():
+        return get_form_and_post_upload(
+            request,
+            allowed_extensions={'xlsx'},
+            file_handler=handle_wq_data_ws,
+            template="wq_data_ws.html"
         )
     # =======================================================================
 

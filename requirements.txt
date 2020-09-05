@@ -4,3 +4,4 @@ Flask>=1.1.2
 pandas>=1.0.3
 psycopg2>=2.8.5
 waitress>=1.4.4
+xlrd>=1.2.0
