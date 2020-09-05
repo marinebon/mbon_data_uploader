@@ -112,7 +112,7 @@ def handle_wq_data_ws(filepath, form_args):
 
     # get timestamp from combined date and time
     dataframe["timestamp"] = dataframe["date_time"].apply(
-        lambda d: d.timestamp()
+        lambda d: int(d.timestamp())
     )
     filepath = f"{filepath}.csv"
     dataframe.to_csv(filepath, na_rep=NA_REP)
