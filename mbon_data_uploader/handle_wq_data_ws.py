@@ -6,11 +6,13 @@ Script to upload water quality data into influxdb.
 ## Data quality issues handled by the ingestion script:
 1. `TIME` values set to `:` are replaced by empty string.
 2. rows without `DATE` are dropped.
+3. cell values "NA" and "ND" changed to empty
 
 ## manual changes I have made to the dataset before uploading
 1. Time value '11:545' changed to '11:45'
-2. semicolons in `TIME` column replaced by colons
+2. semicolons in `TIME` column replaced with colons
 3. 02/29/2019 (invalid date) replaced with 02/28/2019
+4. replaced 0..07 with 0.07 in column "TURB-S"
 =====================================================
 """
 
@@ -30,7 +32,7 @@ def handle_wq_data_ws(filepath, form_args):
     assert ".xlsx" in filepath
 
     INFLUXDB_SERVER = os.environ["INFLUXDB_HOSTNAME"]
-    DBNAME = "fk_water_quality"  # TODO: this doesn't work?!? need to update the grafana db provissioning file
+    DBNAME = "fwc_coral_disease"  # TODO: this doesn't work?!? need to update the grafana db provissioning file
     SHEET_NAME = "Data in ppm"
     MEASUREMENT = "Walton_Smith"
     TAGS = [    # metadata items attached to each measurment
@@ -76,7 +78,8 @@ def handle_wq_data_ws(filepath, form_args):
         "DATE",
         "TIME"
     ]
-    NA_REP = ''  # influxdb doesn't handle NA, NaN, null
+
+    NA_REP = -999.0  # influxdb doesn't handle NA, NaN, null
 
     dataframe = pd.read_excel(
         filepath,
@@ -92,6 +95,14 @@ def handle_wq_data_ws(filepath, form_args):
 
     # fix the few columns with empty time but still have a colon
     dataframe["TIME"].replace(':', '', inplace=True)
+
+    for field_column in FIELDS:
+        # change the few 'NA' values to empty cells
+        dataframe[field_column].replace('NA', '', inplace=True)
+        dataframe[field_column].replace('ND', '', inplace=True)
+
+        # set na value on all empty cells
+        dataframe[field_column].replace('', NA_REP, inplace=True)
 
     # combine date and time rows
     dataframe['date_time'] = dataframe.apply(
@@ -121,12 +132,15 @@ def handle_wq_data_ws(filepath, form_args):
     logging.info("loading {}'s fields ({}) with tags={}".format(
         MEASUREMENT, FIELDS, TAGS
     ))
+
+    # export_csv_to_influx --csv /tmp/WS_Aug_updated.xlsx.csv --dbname fwc_coral_disease --measurement Walton_Smith --field_columns 'NOX-S,NOX-B,NO3_S,NO3_B,NO2-S,NO2-B,NH4-S,NH4-B,TN-S,TN-B,DIN-S,DIN-B,TON-S,TON-B,TP-S,TP-B,SRP-S,SRP-B,APA-S,APA-B,CHLA-S,CHLA-B,TOC-S,TOC-B,SiO2-S,SiO2-B,TURB-S,TURB-B,SAL-S,SAL-B,TEMP-S,TEMP-B,DO-S,DO-B,Kd,pH,TN:TP,N:P,DIN:TP,Si:DIN,%SAT-S,%SAT_B,%Io,DSIGT' --tag_columns 'SURV,BASIN,SEGMENT,ZONE,STATION,SITE,LATDEC,LONDEC,DEPTH' --force_insert_even_csv_no_update True --server $INFLUXDB_HOSTNAME --time_column timestamp --force_float_columns 'NOX-S,NOX-B,NO3_S,NO3_B,NO2-S,NO2-B,NH4-S,NH4-B,TN-S,TN-B,DIN-S,DIN-B,TON-S,TON-B,TP-S,TP-B,SRP-S,SRP-B,APA-S,APA-B,CHLA-S,CHLA-B,TOC-S,TOC-B,SiO2-S,SiO2-B,TURB-S,TURB-B,SAL-S,SAL-B,TEMP-S,TEMP-B,DO-S,DO-B,Kd,pH,TN:TP,N:P,DIN:TP,Si:DIN,%SAT-S,%SAT_B,%Io,DSIGT'
     subprocess.run([
         "export_csv_to_influx",
         "--csv", filepath,
         "--dbname", DBNAME,
         "--measurement", MEASUREMENT,
         "--field_columns", ",".join(FIELDS),
+        "--force_float_columns", ",".join(FIELDS),
         "--tag_columns", ','.join(TAGS),
         "--force_insert_even_csv_no_update", "True",
         "--server", INFLUXDB_SERVER,
