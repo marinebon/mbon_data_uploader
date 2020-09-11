@@ -14,6 +14,10 @@ Script to upload water quality data into influxdb.
 3. 02/29/2019 (invalid date) replaced with 02/28/2019
 4. replaced 0..07 with 0.07 in column "TURB-S"
 =====================================================
+
+Note that for some dates (< 1997) in the WS file there is no time value.
+Without the time value the database will have duplicate points on those days.
+This will mess up the display of the data; I think only one of the values on each day will be retained
 """
 
 import pytz
