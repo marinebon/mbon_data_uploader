@@ -1,4 +1,4 @@
-export-csv-to-influx @ git+https://github.com/7yl4r/export-csv-to-influx@master#egg=export-csv-to-influx
+exportcsvtoinflux @ git+https://github.com/7yl4r/export-csv-to-influx@master#egg=exportcsvtoinflux
 filepanther @ git+https://github.com/7yl4r/filepanther@master#egg=filepanther
 Flask>=1.1.2
 pandas>=1.0.3
