@@ -21,6 +21,7 @@ from mbon_data_uploader.handle_worldview_image import handle_worldview_image
 from mbon_data_uploader.handle_wq_data_ws import handle_wq_data_ws
 # =======================================================================
 
+__version__ = "1.0.1"
 
 def create_app(test_config=None):
 
@@ -133,7 +134,8 @@ def create_app(test_config=None):
         error_dict = {
             'code': error.code,
             'description': error.description,
-            'stack_trace': stacktrace
+            'stack_trace': stacktrace,
+            'version': __version__
         }
         dir(error)
         # if isinstance(error, subprocess.CalledProcessError):
