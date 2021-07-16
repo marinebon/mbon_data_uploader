@@ -144,10 +144,10 @@ def create_app(test_config=None):
             error_dict['stderr'] = error.original_exception.stderr
             return render_template(
                 "error_subprocess.html", error_dict=error_dict
-            )  # , 500
+            ), 500
         else:
             return render_template(
                 "error.html", error_dict=error_dict
-            )  # , 500
+            ), 500
 
     return app
