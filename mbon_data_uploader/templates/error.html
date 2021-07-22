@@ -1,16 +1,13 @@
-mbon_data_uploader <pre>v{{error_dict.__version__}}</pre>
+<h1>mbon_data_uploader <pre>v{{error_dict.__version__}}</pre></h1>
 <br>
+<hr>
 <br>
-HTTPException <pre>{{error_dict.code}}</pre>
+<h3>error details:</h3>
+<pre>
+{{error_dict.error_desc_text}}
+</pre>
 <br>
-<br>
-Description: <br>
-{{error_dict.description}}
-<br>
-<br>
-Stack trace: <br>
-<pre>{{error_dict.stack_trace}}</pre>
-<br>
+<hr>
 <br>
 To report this error please open a "new issue" in
 <a href="https://github.com/marinebon/mbon_data_uploader/issues">

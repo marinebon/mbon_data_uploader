@@ -21,7 +21,51 @@ from mbon_data_uploader.handle_worldview_image import handle_worldview_image
 from mbon_data_uploader.handle_wq_data_ws import handle_wq_data_ws
 # =======================================================================
 
-__version__ = "1.0.2"
+__version__ = "1.1.0"
+
+
+def strfy_subproc_error(e, cmd=[]):
+    """
+    Generates a string with lots of info to help debug a subproc gone wrong.
+    Likely copy-pasted from https://github.com/7yl4r/subproc-test .
+
+    params:
+    -------
+    e : Exception
+        the exception thrown by subprocess.run
+    cmd : list(str)
+        command [] that was passed into run()
+    """
+    # TODO: assert e is an error
+    stacktrace = traceback.format_exc()
+    output_text = (
+        "\n# =========================================================\n"
+        f"# === exited w/ returncode {getattr(e, 'returncode', None)}. "
+        "=============================\n"
+        f"# === cmd     : {' '.join(cmd)}\n"
+        f"# === e.cmd   : {getattr(e, 'cmd', None)}\n"
+        f"# === args : \n\t{getattr(e, 'args', None)} \n"
+        f"# === err code: {getattr(e, 'code', None)} \n"
+        f"# === descrip : \n\t{getattr(e, 'description', None)} \n"
+        f"# === stack_trace: \n\t{stacktrace}\n"
+        f"# === std output : \n\t{getattr(e, 'stdout', None)} \n"
+        f"# === stderr out : \n\t{getattr(e, 'stderr', None)} \n"
+        # f"# === all err obj attributes: \n{dir(e)}"
+    )
+    if getattr(e, 'original_exception', None) is not None:
+        output_text += (
+            "# === original exception output: \n\t"
+            f"{getattr(e.original_exception, 'output', None)}\n"
+            "# === original exception stdout: \n\t"
+            f"{getattr(e.original_exception, 'stdout', None)}\n"
+            "# === original exception stderr: \n\t"
+            f"{getattr(e.original_exception, 'stderr', None)}\n"
+        )
+    output_text += (
+        "# =========================================================\n"
+    )
+    return output_text
+
 
 def create_app(test_config=None):
 
@@ -130,26 +174,12 @@ def create_app(test_config=None):
 
     @app.errorhandler(500)
     def handle_http_exception(error):
-        stacktrace = traceback.format_exc()
         error_dict = {
-            'code': error.code,
-            'description': error.description,
-            'stack_trace': stacktrace,
-            '__version__': __version__
+            '__version__': __version__,
+            'error_desc_text': strfy_subproc_error(error)
         }
-        dir(error)
-        # if isinstance(error, subprocess.CalledProcessError):
-        if "subprocess.CalledProcessError" in stacktrace:
-            error_dict['return_code'] = error.original_exception.returncode
-            error_dict['output'] = error.original_exception.output
-            error_dict['stdout'] = error.original_exception.stdout
-            error_dict['stderr'] = error.original_exception.stderr
-            return render_template(
-                "error_subprocess.html", error_dict=error_dict
-            ), 500
-        else:
-            return render_template(
-                "error.html", error_dict=error_dict
-            ), 500
+        return render_template(
+            "error.html", error_dict=error_dict
+        ), 500
 
     return app
