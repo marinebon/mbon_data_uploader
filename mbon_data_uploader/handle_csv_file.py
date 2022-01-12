@@ -3,6 +3,7 @@ import os
 import pandas as pd
 import subprocess
 
+from strfy_subproc_error import subproc_error_wrapper
 
 def handle_csv_file(filepath, form_args):
     """
@@ -37,7 +38,7 @@ def handle_csv_file(filepath, form_args):
     ))
     # measurement,tag_set      field_set
     # rs_oc_chlor,location=MIA anom,mean,clim
-    subprocess.run([
+    subproc_error_wrapper([
         "export_csv_to_influx",
         "--csv", filepath,
         "--dbname", DBNAME,
@@ -47,7 +48,7 @@ def handle_csv_file(filepath, form_args):
         "--force_insert_even_csv_no_update", "True",
         "--server", INFLUXDB_SERVER,
         "--time_column", time_column
-    ], check=True)
+    ])
 
     # === TODO: remove "na_rep" values from influx that were inserted by
     #           export_csv_to_influx
