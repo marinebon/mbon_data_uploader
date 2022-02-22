@@ -3,7 +3,7 @@ import os
 import pandas as pd
 import subprocess
 
-from strfy_subproc_error import subproc_error_wrapper
+from mbon_data_uploader.strfy_subproc_error import subproc_error_wrapper
 
 def handle_csv_file(filepath, form_args):
     """

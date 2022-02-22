@@ -24,47 +24,7 @@ from mbon_data_uploader.handle_wq_data_ws import handle_wq_data_ws
 __version__ = "1.1.0"
 
 
-def strfy_subproc_error(e, cmd=[]):
-    """
-    Generates a string with lots of info to help debug a subproc gone wrong.
-    Likely copy-pasted from https://github.com/7yl4r/subproc-test .
-
-    params:
-    -------
-    e : Exception
-        the exception thrown by subprocess.run
-    cmd : list(str)
-        command [] that was passed into run()
-    """
-    # TODO: assert e is an error
-    stacktrace = traceback.format_exc()
-    output_text = (
-        "\n# =========================================================\n"
-        f"# === exited w/ returncode {getattr(e, 'returncode', None)}. "
-        "=============================\n"
-        f"# === cmd     : {' '.join(cmd)}\n"
-        f"# === e.cmd   : {getattr(e, 'cmd', None)}\n"
-        f"# === args : \n\t{getattr(e, 'args', None)} \n"
-        f"# === err code: {getattr(e, 'code', None)} \n"
-        f"# === descrip : \n\t{getattr(e, 'description', None)} \n"
-        f"# === stack_trace: \n\t{stacktrace}\n"
-        f"# === std output : \n\t{getattr(e, 'stdout', None)} \n"
-        f"# === stderr out : \n\t{getattr(e, 'stderr', None)} \n"
-        # f"# === all err obj attributes: \n{dir(e)}"
-    )
-    if getattr(e, 'original_exception', None) is not None:
-        output_text += (
-            "# === original exception output: \n\t"
-            f"{getattr(e.original_exception, 'output', None)}\n"
-            "# === original exception stdout: \n\t"
-            f"{getattr(e.original_exception, 'stdout', None)}\n"
-            "# === original exception stderr: \n\t"
-            f"{getattr(e.original_exception, 'stderr', None)}\n"
-        )
-    output_text += (
-        "# =========================================================\n"
-    )
-    return output_text
+from mbon_data_uploader.strfy_subproc_error import strfy_subproc_error
 
 
 def create_app(test_config=None):
