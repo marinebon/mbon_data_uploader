@@ -84,14 +84,6 @@ def create_app(test_config=None):
         return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in allowed_extensions
 
-    @app.route('/upload_success', methods=['GET'])
-    def upload_success():
-        return '''
-        <!doctype html>
-        <title>File Uploaded</title>
-        <h1>Your file has been uploaded</h1>
-        '''
-
     def check_for_file(request):
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -111,9 +103,13 @@ def create_app(test_config=None):
             filename = secure_filename(file.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
-            file_handler(filepath, request.form)
-            return redirect(
-                url_for('upload_success', filename=filename)
+            output = file_handler(filepath, request.form)
+            return render_template(
+                "upload_success.html", 
+                out=output, 
+                fpath=filepath, 
+                handler=file_handler,
+                version=__version__,
             )
         elif file_allowed is False:
             return "File extension not allowed"
