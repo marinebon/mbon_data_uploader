@@ -18,7 +18,7 @@ def subproc_error_wrapper(cmd):
     """
 
     try:
-        subprocess.run(
+        result = subprocess.run(
             cmd,
             check=True,
             capture_output=True,
@@ -28,6 +28,7 @@ def subproc_error_wrapper(cmd):
             # stderr=subprocess.PIPE
             # # ^ Captures stderr so e.stderr is populated if needed
         )
+        return result
     except(subprocess.CalledProcessError, FileNotFoundError) as e:
         raise RuntimeError(strfy_subproc_error(e, cmd))
 
