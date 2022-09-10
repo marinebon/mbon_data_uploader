@@ -1,6 +1,7 @@
 import logging
 import os
 import pandas as pd
+from io import StringIO
 import subprocess
 
 from mbon_data_uploader.strfy_subproc_error import subproc_error_wrapper
