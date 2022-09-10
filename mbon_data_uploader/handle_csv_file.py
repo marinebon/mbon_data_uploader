@@ -69,7 +69,10 @@ def handle_csv_file(filepath, form_args):
         "--time_column", time_column
     ]
     logger.info(cmd_list)
-    subproc_error_wrapper(cmd_list)
+    result = subproc_error_wrapper(cmd_list)
+    
+    logger.debug(result.stdout)
+    logger.info(result.stderr)
     
     return log_stream.getvalue()
 
