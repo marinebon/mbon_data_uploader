@@ -22,6 +22,7 @@ def subproc_error_wrapper(cmd):
             cmd,
             check=True,
             capture_output=True,
+            text=True,
             # shell=True
             # stdout=subprocess.DEVNULL,
             # # ^ Ignores stdout
