@@ -49,6 +49,10 @@ def handle_csv_file(filepath, form_args):
         key, val = key_val.split('=')
         df[key] = val
         tag_columns.append(key)
+
+    # === drop empty columns
+    df = df.dropna(axis=1, how='all')
+    
     df.to_csv(filepath, na_rep=NA_REP)
 
     # === submit to influxdb server
