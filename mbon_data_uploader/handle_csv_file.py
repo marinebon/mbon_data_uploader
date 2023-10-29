@@ -54,8 +54,8 @@ def handle_csv_file(filepath, form_args):
     # === drop empty columns
     df = df.dropna(axis=1, how='all')
 
-    # === ensure time column is in POSiX time fmt
-    df[time_column] = pd.to_datetime(df[time_column]).astype(int)
+    # === ensure time column is in proper format
+    df[time_column] = pd.to_datetime(df[time_column]).dt.strftime('%Y-%m-%d %H:%M:%S')
     
     # === write csv file
     df.to_csv(filepath, na_rep=NA_REP)
