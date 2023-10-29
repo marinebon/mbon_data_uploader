@@ -7,6 +7,7 @@ import sys
 
 from mbon_data_uploader.strfy_subproc_error import subproc_error_wrapper
 
+
 def handle_csv_file(filepath, form_args):
     """
     Pushes data from csv file into influxdb.
@@ -52,7 +53,11 @@ def handle_csv_file(filepath, form_args):
 
     # === drop empty columns
     df = df.dropna(axis=1, how='all')
+
+    # === ensure time column is in POSiX time fmt
+    df[time_column] = pd.to_datetime(df[time_column]).astype(int)
     
+    # === write csv file
     df.to_csv(filepath, na_rep=NA_REP)
 
     # === submit to influxdb server

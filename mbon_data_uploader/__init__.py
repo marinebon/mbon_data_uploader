@@ -21,7 +21,7 @@ from mbon_data_uploader.handle_worldview_image import handle_worldview_image
 from mbon_data_uploader.handle_wq_data_ws import handle_wq_data_ws
 # =======================================================================
 
-__version__ = "1.1.0"
+__version__ = "1.1.2"
 
 
 from mbon_data_uploader.strfy_subproc_error import strfy_subproc_error
