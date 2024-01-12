@@ -41,6 +41,11 @@ def handle_csv_file(filepath, form_args):
     assert fields is not None
     time_column = form_args['time_column']
     assert time_column is not None
+    should_convert_time = form_args['should_convert_time']
+    if should_convert_time in ["True", "true", "yes", 'y', 'Y']:
+        should_convert_time = True
+    else:
+        should_convert_time == False
 
     # === insert tag columns & set proper na values
     NA_REP = ''  # influxdb doesn't handle NA, NaN, null
@@ -54,8 +59,9 @@ def handle_csv_file(filepath, form_args):
     # === drop empty columns
     df = df.dropna(axis=1, how='all')
 
-    # === ensure time column is in proper format
-    df[time_column] = pd.to_datetime(df[time_column]).dt.strftime('%Y-%m-%d %H:%M:%S')
+    if should_convert_time:
+        # === ensure time column is in proper format
+        df[time_column] = pd.to_datetime(df[time_column]).dt.strftime('%Y-%m-%d %H:%M:%S')
     
     # === write csv file
     df.to_csv(filepath, na_rep=NA_REP)

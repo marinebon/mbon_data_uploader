@@ -36,12 +36,19 @@
           ></td>
       </tr>
       <tr>
-          <td>time_column</td>
-          <td>(example: Time)</td>
-          <td><input
-              type=text name=time_column value="{{request.args['time_column']}}"
-          ></td>
-      </tr>
+        <td>time_column</td>
+        <td>(example: Time)</td>
+        <td><input
+            type=text name=time_column value="{{request.args['time_column']}}"
+        ></td>
+    </tr>
+    <tr>
+        <td>should_convert_time</td>
+        <td>(example: True)</td>
+        <td><input
+            type=text name=should_convert_time value="{{request.args['should_convert_time']}}"
+        ></td>
+    </tr>
   </table>
 </form>
 
