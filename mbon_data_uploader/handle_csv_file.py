@@ -41,7 +41,7 @@ def handle_csv_file(filepath, form_args):
     assert fields is not None
     time_column = form_args['time_column']
     assert time_column is not None
-    should_convert_time = form_args['should_convert_time']
+    should_convert_time = form_args.get('should_convert_time', 'false')
     if should_convert_time in ["True", "true", "yes", 'y', 'Y']:
         should_convert_time = True
     else:
