@@ -45,7 +45,7 @@ def handle_csv_file(filepath, form_args):
     if should_convert_time in ["True", "true", "yes", 'y', 'Y']:
         should_convert_time = True
     else:
-        should_convert_time == False
+        should_convert_time = False
 
     # === insert tag columns & set proper na values
     NA_REP = ''  # influxdb doesn't handle NA, NaN, null
