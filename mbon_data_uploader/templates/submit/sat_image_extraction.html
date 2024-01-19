@@ -46,7 +46,7 @@
         <td>should_convert_time</td>
         <td>(example: True)</td>
         <td><input
-            type=text name=should_convert_time value="{{request.args['should_convert_time']}}"
+            type=text name=should_convert_time value="{{request.args.get('should_convert_time', 'false')}}"
         ></td>
     </tr>
   </table>
